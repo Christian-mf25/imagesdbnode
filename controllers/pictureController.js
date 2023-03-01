@@ -6,6 +6,8 @@ exports.create = async (req, res) => {
     const { name } = req.body;
 
     const file = req.file;
+		// console.log(file)
+
     const picture = new Picture({
       name,
       src: file.path,
@@ -36,6 +38,19 @@ exports.findAll = async (req, res) => {
   try {
     const pictures = await Picture.find();
     res.json(pictures);
+  } catch (err) {
+    res.status(500).json({ message: "Erro ao buscar as imagens." });
+  }
+};
+
+exports.findOne = async (req, res) => {
+  try {
+    const picture = await Picture.findById(req.params.id);
+    if (!picture) {
+      return res.status(404).json({ message: "Imagem não encontrada" });
+    }
+    // fs.unlinkSync(picture.src);
+		return res.status(200).json(picture);
   } catch (err) {
     res.status(500).json({ message: "Erro ao buscar as imagens." });
   }
